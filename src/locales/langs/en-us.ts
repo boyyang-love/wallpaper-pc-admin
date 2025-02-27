@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'SoybeanAdmin',
+    title: 'Wallpaper Admin',
     updateTitle: 'System Version Update Notification',
     updateContent: 'A new version of the system has been detected. Do you want to refresh the page immediately?',
     updateConfirm: 'Refresh immediately',
@@ -164,6 +164,7 @@ const local: App.I18n.Schema = {
     'iframe-page': 'Iframe',
     home: 'Home',
     images: 'images',
+    tag: 'tags',
   },
   page: {
     login: {
@@ -251,7 +252,12 @@ const local: App.I18n.Schema = {
       status: 'status',
       enable: 'Enable',
       disable: 'Disable',
+      tag: 'tags',
     },
+    tag: {
+      name: 'name',
+      type: 'type'
+    }
   },
   form: {
     required: 'Cannot be empty',

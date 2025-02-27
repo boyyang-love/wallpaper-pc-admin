@@ -492,7 +492,12 @@ declare namespace App {
           status: string,
           enable: string,
           disable: string
-        }
+          tag: string
+        },
+        tag: {
+          name: string,
+          type: string
+        },
       };
       form: {
         required: string;

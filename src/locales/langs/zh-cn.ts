@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'Soybean 管理系统',
+    title: 'Wallpaper Admin',
     updateTitle: '系统版本更新通知',
     updateContent: '检测到系统有新版本发布，是否立即刷新页面？',
     updateConfirm: '立即刷新',
@@ -164,6 +164,7 @@ const local: App.I18n.Schema = {
     'iframe-page': '外链页面',
     home: '首页',
     images: '图片',
+    tag: '标签',
   },
   page: {
     login: {
@@ -251,8 +252,12 @@ const local: App.I18n.Schema = {
       status: '状态',
       enable: '启用',
       disable: '禁用',
+      tag: '标签',
     },
-
+    tag: {
+      name: '名称',
+      type: '类型',
+    },
   },
   form: {
     required: '不能为空',

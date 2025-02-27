@@ -22,4 +22,5 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   login: () => import("@/views/_builtin/login/index.vue"),
   home: () => import("@/views/home/index.vue"),
   images: () => import("@/views/images/index.vue"),
+  tag: () => import("@/views/tag/index.vue"),
 };

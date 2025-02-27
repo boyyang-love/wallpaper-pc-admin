@@ -110,11 +110,12 @@ declare namespace Api {
       h: number;
       status: number;
       user_id: string;
+      tags: Tag.TagInfo[];
     }>
 
     type ImageInfoList = Common.PaginatingQueryRecord<ImageInfo>
 
-    type ImageInfoUpdateParams = Pick<ImageInfo, 'file_name' | 'type' | 'status'> & { id: string }
+    type ImageInfoUpdateParams = Pick<ImageInfo, 'file_name' | 'type' | 'status'> & { id: string, tags: string[] }
 
     type ImageUploadParams = {
       file: File,
@@ -125,6 +126,7 @@ declare namespace Api {
       bucket_name: string
       quality: number
       status: number
+      tags: string[]
     }
 
     type ImageUploadInfo = {
@@ -132,5 +134,23 @@ declare namespace Api {
       path: string
       origin_path: string
     }
+  }
+
+  namespace Tag {
+    type TagListSearchParams = CommonType.RecordNullable<Pick<TagInfo, 'name' | 'type'> & Common.CommonSearchParams>
+
+    type TagInfoList = Common.PaginatingQueryRecord<TagInfo>
+
+    type TagCareateParams = Pick<TagInfo, 'name' | 'type'>
+
+    type TagUpdateParams = Pick<TagInfo, 'id' | 'name' | 'type'>
+
+    type TagRemoveParms = Pick<TagInfo, 'id'>
+
+    type TagInfo = Common.CommonRecord<{
+      name: string,
+      type: string,
+      user_id: string
+    }>
   }
 }

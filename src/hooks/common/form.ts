@@ -48,6 +48,7 @@ export function useFormRules() {
     return {
       required: true,
       message,
+      trigger: 'blur',
     }
   }
 

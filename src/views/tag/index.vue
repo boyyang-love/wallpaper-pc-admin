@@ -1,13 +1,12 @@
 <script setup lang="tsx">
-import {NButton, NPopconfirm, NTag} from 'naive-ui'
-import {fetchImageDel, fetchImageInfoList} from '@/service/api'
+import {NButton, NPopconfirm} from 'naive-ui'
+import {fetchImageDel} from '@/service/api'
 import {$t} from '@/locales'
 import {useAppStore} from '@/store/modules/app'
 import {useTable, useTableOperate} from '@/hooks/common/table'
 import OperateDrawer from './modules/operate-drawer.vue'
 import Search from './modules/search.vue'
-import {imageUrl} from '@/utils/imageUrl'
-import {fileSize} from '@/utils/fileSize'
+import {fetchTagInfoList, fetchTagRemove} from '@/service/api/tag'
 
 const appStore = useAppStore()
 
@@ -22,14 +21,13 @@ const {
   searchParams,
   resetSearchParams,
 } = useTable({
-  apiFn: fetchImageInfoList,
+  apiFn: fetchTagInfoList,
   showTotal: true,
   apiParams: {
     page: 1,
     limit: 10,
-    file_name: null,
-    type: null,
-    status: null,
+    type: '',
+    name: '',
   },
   columns: () => [
     {
@@ -41,93 +39,19 @@ const {
       key: 'index',
       title: $t('common.index'),
       align: 'center',
-      width: 55,
+      width: 60,
     },
     {
-      key: 'file_path',
-      title: $t('page.image.img'),
-      align: 'center',
-      width: 240,
-      render: row => {
-        return <div>
-          <n-image src={imageUrl(row.file_path)} width="200" object-fit="cover"></n-image>
-        </div>
-      },
-    },
-    {
-      key: 'tags',
-      title: $t('page.image.tag'),
+      key: 'name',
+      title: $t('page.tag.name'),
       align: 'left',
-      minWidth: 100,
-      render: row => {
-        return <div>
-          <NSpace>
-            {row.tags.map(t => {
-              return <NTag
-                size="small"
-                type="success"
-              >
-                {t.name}
-              </NTag>
-            })}
-          </NSpace>
-        </div>
-      },
-    },
-    {
-      key: 'file_name',
-      title: $t('page.image.name'),
-      align: 'left',
-      minWidth: 100,
-    },
-
-    {
-      key: 'file_size',
-      title: $t('page.image.size'),
-      align: 'center',
-      width: 100,
-      render: row => {
-        return <span>
-          {fileSize(row.file_size)}
-        </span>
-      },
+      minWidth: 200,
     },
     {
       key: 'type',
-      title: $t('page.image.type'),
+      title: $t('page.tag.type'),
       align: 'center',
-      width: 100,
-    },
-    {
-      key: 'w',
-      title: $t('page.image.px'),
-      align: 'center',
-      width: 100,
-      render: row => {
-        return <span>
-          {row.w}x{row.h}
-        </span>
-      },
-    },
-    {
-      key: 'status',
-      title: $t('page.image.status'),
-      align: 'center',
-      width: 100,
-      render: row => {
-        if (row.status === null) {
-          return null
-        }
-
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-          1: 'success',
-          2: 'warning',
-        }
-
-        return <NTag
-          type={tagMap[row.status as unknown as Api.Common.EnableStatus]}>{row.status === 1 ? $t('page.image.enable') : $t('page.image.disable')}
-        </NTag>
-      },
+      minWidth: 200
     },
     {
       key: 'operate',
@@ -139,7 +63,7 @@ const {
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id, [row.file_path, row.origin_file_path])}>
+          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => $t('common.confirmDelete'),
               trigger: () => (
@@ -174,9 +98,9 @@ async function handleBatchDelete() {
   await onBatchDeleted()
 }
 
-async function handleDelete(id: string, paths: string[]) {
+async function handleDelete(id: string) {
   // request
-  await fetchImageDel({id: id, paths: paths, bucket_name: 'wallpaper'})
+  await fetchTagRemove({id: id})
 
   await onDeleted()
 }

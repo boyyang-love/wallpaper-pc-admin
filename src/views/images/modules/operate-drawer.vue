@@ -5,6 +5,7 @@ import {$t} from '@/locales'
 import {type IUpload, useUpload} from '@/hooks/fileUpload'
 import {imageUrl} from '@/utils/imageUrl'
 import {fetchImageInfoUpdate} from '@/service/api'
+import {fetchTagInfoList} from '@/service/api/tag'
 
 defineOptions({
   name: 'OperateDrawer',
@@ -42,7 +43,7 @@ const title = computed(() => {
   return titles[props.operateType]
 })
 
-type Model = Pick<Api.Image.ImageInfo, 'id' | 'file_name' | 'type' | 'status' | 'file_path'>;
+type Model = Pick<Api.Image.ImageInfo, 'id' | 'file_name' | 'type' | 'status' | 'file_path'> & { tags: string[] };
 
 const model = ref(createDefaultModel())
 
@@ -53,6 +54,7 @@ function createDefaultModel(): Model {
     file_name: '',
     type: '',
     status: 2,
+    tags: [],
   }
 }
 
@@ -63,15 +65,15 @@ const rules: Record<RuleKey, App.Global.FormRule> = {
   file_name: defaultRequiredRule,
 }
 
-/** the enabled role options */
-const imageOptions = ref<CommonType.Option<string>[]>([])
+const imageOptions = ref<CommonType.Option[]>([])
+const tagOptions = ref<CommonType.Option[]>([])
 
 
 function handleInitModel() {
   model.value = createDefaultModel()
 
   if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(model.value, props.rowData)
+    Object.assign(model.value, {...props.rowData, tags: props.rowData.tags.map(t => t.id)})
   }
 }
 
@@ -93,11 +95,11 @@ async function handleSubmit() {
         bucket_name: 'wallpaper',
         status: model.value.status,
         quality: 60,
+        tags: model.value.tags,
       }
     })
 
     const res = await upload(uploadParams as unknown as IUpload.UploadParams[])
-    console.log(res, 'xxx')
     const errs = res.filter(r => r.error !== null)
 
     if (errs.length) {
@@ -105,14 +107,18 @@ async function handleSubmit() {
       return
     }
 
+    window.$message?.success($t('common.addSuccess'))
   } else {
-    await fetchImageInfoUpdate({
+    const {error: err} = await fetchImageInfoUpdate({
       id: model.value.id,
       file_name: model.value.file_name,
       type: model.value.type,
       status: model.value.status,
+      tags: model.value.tags,
     })
-    window.$message?.success($t('common.updateSuccess'))
+    if (!err) {
+      window.$message?.success($t('common.updateSuccess'))
+    }
   }
   loading.value = false
   reset()
@@ -133,25 +139,31 @@ function getImageOptions() {
   ]
 }
 
-// const {
-//   onChange,
-//   uploadRef,
-//   fileInfo,
-//   reset,
-// } = useFileUpload((info) => {
-//   model.value.file_name = info?.file_name || ''
-// })
+async function getTagOptions() {
+  const {data, error} = await fetchTagInfoList({page: 1, limit: 10000})
+  if (error) {
+    return
+  }
+
+  tagOptions.value = data?.records.map(d => {
+    return {
+      label: d.name,
+      value: d.id,
+    }
+  })
+}
 
 const {uploadRef, onChange, fileInfo, reset, upload} = useUpload(() => {
   model.value.file_name = fileInfo.fileList[0].name
 })
 
 
-watch(visible, () => {
+watch(visible, async () => {
   if (visible.value) {
     handleInitModel()
-    restoreValidation()
     getImageOptions()
+    await restoreValidation()
+    await getTagOptions()
     reset()
   }
 })
@@ -201,6 +213,15 @@ watch(visible, () => {
             v-model:value="model.type"
             :options="imageOptions"
             placeholder="请选择图片类型"
+          />
+        </NFormItem>
+        <NFormItem :label="$t('page.image.tag')" path="status">
+          <NSelect
+            v-model:value="model.tags"
+            :options="tagOptions"
+            multiple
+            filterable
+            placeholder="请选择图片标签"
           />
         </NFormItem>
         <NFormItem :label="$t('page.image.status')" path="status">

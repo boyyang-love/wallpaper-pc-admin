@@ -69,7 +69,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base$view.images',
     meta: {
       title: 'images',
-      i18nKey: 'route.images'
+      i18nKey: 'route.images',
+      order: 2
     }
   },
   {
@@ -82,6 +83,16 @@ export const generatedRoutes: GeneratedRoute[] = [
       i18nKey: 'route.login',
       constant: true,
       hideInMenu: true
+    }
+  },
+  {
+    name: 'tag',
+    path: '/tag',
+    component: 'layout.base$view.tag',
+    meta: {
+      title: 'tag',
+      i18nKey: 'route.tag',
+      order: 3
     }
   }
 ];
