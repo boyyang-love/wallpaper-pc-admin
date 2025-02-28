@@ -96,6 +96,7 @@ export const request = createFlatRequest<App.Service.Response, RequestInstanceSt
     },
     onError(error) {
       // when the request is fail, you can show error message
+      const authStore = useAuthStore()
 
       let message = error.message
       let backendErrorCode = ''
@@ -104,6 +105,10 @@ export const request = createFlatRequest<App.Service.Response, RequestInstanceSt
       if (error.code === BACKEND_ERROR_CODE) {
         message = error.response?.data?.msg || message
         backendErrorCode = String(error.response?.data?.code || '')
+      }
+
+      if (error.status === 401) {
+        authStore.resetStore()
       }
 
       // the error message is displayed in the modal

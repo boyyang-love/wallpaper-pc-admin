@@ -4,7 +4,7 @@ import type {Preset} from '@unocss/core'
 import type {Theme} from '@unocss/preset-uno'
 
 export function presetSoybeanAdmin(): Preset<Theme> {
-  const preset: Preset<Theme> = {
+  return {
     name: 'preset-soybean-admin',
     shortcuts: [
       {
@@ -48,8 +48,6 @@ export function presetSoybeanAdmin(): Preset<Theme> {
       },
     ],
   }
-
-  return preset
 }
 
 export default presetSoybeanAdmin

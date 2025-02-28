@@ -70,7 +70,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'images',
       i18nKey: 'route.images',
-      order: 2
+      order: 2,
+      icon: 'marketeq:4k-2'
     }
   },
   {
@@ -92,7 +93,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'tag',
       i18nKey: 'route.tag',
-      order: 3
+      order: 3,
+      icon: 'marketeq:hastag'
     }
   }
 ];
