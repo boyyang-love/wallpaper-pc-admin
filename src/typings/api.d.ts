@@ -35,14 +35,10 @@ declare namespace Api {
     type CommonRecord<T = any> = {
       /** record id */
       id: string;
-      /** record creator */
-      createBy: string;
-      /** record create time */
-      createTime: string;
-      /** record updater */
-      updateBy: string;
-      /** record update time */
-      updateTime: string;
+      /** record create */
+      created: string;
+      /** record update */
+      updated: string;
     } & T;
 
   }
@@ -111,11 +107,18 @@ declare namespace Api {
       status: number;
       user_id: string;
       tags: Tag.TagInfo[];
+      category: Category.CategoryInfo[];
+      recommend: Recommend.RecommendInfo[];
     }>
 
     type ImageInfoList = Common.PaginatingQueryRecord<ImageInfo>
 
-    type ImageInfoUpdateParams = Pick<ImageInfo, 'file_name' | 'type' | 'status'> & { id: string, tags: string[] }
+    type ImageInfoUpdateParams = Pick<ImageInfo, 'file_name' | 'type' | 'status'> & {
+      id: string,
+      tags: string[],
+      category: string[],
+      recommend: string[]
+    }
 
     type ImageUploadParams = {
       file: File,
@@ -126,7 +129,9 @@ declare namespace Api {
       bucket_name: string
       quality: number
       status: number
-      tags: string[]
+      tags: string[],
+      category: string[],
+      recommend: string[],
     }
 
     type ImageUploadInfo = {
@@ -141,16 +146,59 @@ declare namespace Api {
 
     type TagInfoList = Common.PaginatingQueryRecord<TagInfo>
 
-    type TagCareateParams = Pick<TagInfo, 'name' | 'type'>
+    type TagCareateParams = Pick<TagInfo, 'name' | 'type' | 'sort'>
 
-    type TagUpdateParams = Pick<TagInfo, 'id' | 'name' | 'type'>
+    type TagUpdateParams = Pick<TagInfo, 'id' | 'name' | 'type' | 'sort'>
 
     type TagRemoveParms = Pick<TagInfo, 'id'>
+
+    type TagSortParams = { sort_data: Array<Pick<TagInfo, 'id' | 'sort'>> }
 
     type TagInfo = Common.CommonRecord<{
       name: string,
       type: string,
+      sort: number
       user_id: string
     }>
   }
+
+  namespace Category {
+    type CategoryListSearchParams = CommonType.RecordNullable<Pick<CategoryInfo, 'name'> & Common.CommonSearchParams>
+
+    type CategoryCareateParams = Pick<CategoryInfo, 'name' | 'sort'>
+
+    type CategoryUpdateParams = Pick<CategoryInfo, 'id' | 'name' | 'sort'>
+
+    type CategoryRemoveParms = Pick<CategoryInfo, 'id'>
+
+    type CategorySortParams = { sort_data: Array<Pick<CategoryInfo, 'id' | 'sort'>> }
+
+    type CategoryInfoList = Common.PaginatingQueryRecord<CategoryInfo>
+
+    type CategoryInfo = Common.CommonRecord<{
+      name: string,
+      sort: number
+    }>
+  }
+
+  namespace Recommend {
+    type RecommendListSearchParams = CommonType.RecordNullable<Pick<RecommendInfo, 'name'> & Common.CommonSearchParams>
+
+    type RecommendCareateParams = Pick<RecommendInfo, 'name' | 'sort'>
+
+    type RecommendUpdateParams = Pick<RecommendInfo, 'id' | 'name' | 'sort'>
+
+    type RecommendRemoveParms = Pick<RecommendInfo, 'id'>
+
+    type RecommendSortParams = { sort_data: Array<Pick<RecommendInfo, 'id' | 'sort'>> }
+
+
+    type RecommendInfoList = Common.PaginatingQueryRecord<RecommendInfo>
+
+    type RecommendInfo = Common.CommonRecord<{
+      name: string,
+      sort: number
+    }>
+  }
+
 }

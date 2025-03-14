@@ -26,6 +26,8 @@ export function fetchImageUpload(data: Api.Image.ImageUploadParams) {
   formData.append('status', String(data.status))
   formData.append('type', data.type)
   formData.append(`tags`, data.tags.join(','))
+  formData.append('category', data.category.join((',')))
+  formData.append('recommend', data.recommend.join((',')))
 
   return request<Api.Image.ImageUploadInfo>({
     url: '/image/upload',

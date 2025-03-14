@@ -336,6 +336,8 @@ declare namespace App {
           yes: string;
           no: string;
         };
+        created: string;
+        updated: string;
       };
       request: {
         logout: string;
@@ -493,10 +495,13 @@ declare namespace App {
           enable: string,
           disable: string
           tag: string
+          category: string
+          recommend: string,
         },
         tag: {
           name: string,
-          type: string
+          type: string,
+          sort: string,
         },
       };
       form: {

@@ -17,6 +17,7 @@ export const request = createFlatRequest<App.Service.Response, RequestInstanceSt
     headers: {
       // apifoxToken: 'XL299LiMEDZ0H5h3A29PxwQXdMJqWyY2',
     },
+    timeout: 30000
   },
   {
     async onRequest(config) {

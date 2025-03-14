@@ -2,10 +2,7 @@
 import {computed, ref, watch} from 'vue'
 import {useFormRules, useNaiveForm} from '@/hooks/common/form'
 import {$t} from '@/locales'
-import {type IUpload, useUpload} from '@/hooks/fileUpload'
-import {imageUrl} from '@/utils/imageUrl'
-import {fetchImageInfoUpdate} from '@/service/api'
-import {fetchTagCreate, fetchTagUpdate} from '@/service/api/tag'
+import {fetchRecommendCreate, fetchRecommendUpdate} from '@/service/api/recommend'
 
 defineOptions({
   name: 'OperateDrawer',
@@ -15,7 +12,7 @@ interface Props {
   /** the type of operation */
   operateType: NaiveUI.TableOperateType;
   /** the edit row data */
-  rowData?: Api.Tag.TagInfo | null;
+  rowData?: Api.Recommend.RecommendInfo | null;
 }
 
 const props = defineProps<Props>()
@@ -43,7 +40,7 @@ const title = computed(() => {
   return titles[props.operateType]
 })
 
-type Model = Pick<Api.Tag.TagInfo, 'id' | 'name' | 'type' | 'sort'>;
+type Model = Pick<Api.Recommend.RecommendInfo, 'id' | 'name' | 'sort'>
 
 const model = ref(createDefaultModel())
 
@@ -51,15 +48,14 @@ function createDefaultModel(): Model {
   return {
     id: '',
     name: '',
-    type: '',
+    sort: 0,
   }
 }
 
-type RuleKey = Extract<keyof Model, 'type' | 'name'>;
+type RuleKey = Extract<keyof Model, 'name'>;
 
 const rules: Record<RuleKey, App.Global.FormRule> = {
   name: defaultRequiredRule,
-  type: defaultRequiredRule,
 }
 
 function handleInitModel() {
@@ -78,9 +74,8 @@ async function handleSubmit() {
   await validate()
   loading.value = true
   if (props.operateType === 'add') {
-    const {error: err} = await fetchTagCreate({
+    const {error: err} = await fetchRecommendCreate({
       name: model.value.name,
-      type: model.value.type,
       sort: model.value.sort,
     })
     if (!err) {
@@ -89,10 +84,9 @@ async function handleSubmit() {
   }
 
   if (props.operateType === 'edit') {
-    const {error: err} = await fetchTagUpdate({
+    const {error: err} = await fetchRecommendUpdate({
       id: model.value.id,
       name: model.value.name,
-      type: model.value.type,
       sort: model.value.sort,
     })
     if (!err) {
@@ -120,11 +114,8 @@ watch(visible, () => {
         <NFormItem :label="$t('page.tag.name')" path="name">
           <NInput v-model:value="model.name" placeholder="请输入标签名称"/>
         </NFormItem>
-        <NFormItem :label="$t('page.tag.type')" path="type">
-          <NInput v-model:value="model.type" placeholder="请输入标签类型"/>
-        </NFormItem>
-        <NFormItem :label="$t('page.tag.sort')" path="type">
-          <NInputNumber class="w-full" v-model:value="model.sort" placeholder="请输入标签排序"/>
+        <NFormItem :label="$t('page.tag.sort')" path="name">
+          <NInputNumber class="w-full" v-model:value="model.sort" placeholder="请输入标签序号"/>
         </NFormItem>
       </NForm>
       <template #footer>

@@ -29,6 +29,7 @@ declare module 'vue' {
     IconLocalBanner: typeof import('~icons/local/banner')['default']
     IconLocalLogo: typeof import('~icons/local/logo')['default']
     IconLocalRad: typeof import('~icons/local/rad')['default']
+    'IconMaterialSymbolsLight:sortByAlpha': typeof import('~icons/material-symbols-light/sort-by-alpha')['default']
     IconMdiArrowDownThin: typeof import('~icons/mdi/arrow-down-thin')['default']
     IconMdiArrowUpThin: typeof import('~icons/mdi/arrow-up-thin')['default']
     IconMdiDrag: typeof import('~icons/mdi/drag')['default']

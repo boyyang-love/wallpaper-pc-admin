@@ -6,6 +6,8 @@ import {type IUpload, useUpload} from '@/hooks/fileUpload'
 import {imageUrl} from '@/utils/imageUrl'
 import {fetchImageInfoUpdate} from '@/service/api'
 import {fetchTagInfoList} from '@/service/api/tag'
+import {fetchCategoryList} from '@/service/api/category'
+import {fetchRecommendList} from '@/service/api/recommend'
 
 defineOptions({
   name: 'OperateDrawer',
@@ -33,7 +35,7 @@ const visible = defineModel<boolean>('visible', {
 const loading = ref<boolean>(false)
 
 const {formRef, validate, restoreValidation} = useNaiveForm()
-const {defaultRequiredRule} = useFormRules()
+const {defaultRequiredRule, defaultRequiredArrRule } = useFormRules()
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
@@ -43,7 +45,11 @@ const title = computed(() => {
   return titles[props.operateType]
 })
 
-type Model = Pick<Api.Image.ImageInfo, 'id' | 'file_name' | 'type' | 'status' | 'file_path'> & { tags: string[] };
+type Model = Pick<Api.Image.ImageInfo, 'id' | 'file_name' | 'type' | 'status' | 'file_path' | 'category'> & {
+  tags: string[],
+  category: string[],
+  recommend: string[]
+};
 
 const model = ref(createDefaultModel())
 
@@ -55,25 +61,36 @@ function createDefaultModel(): Model {
     type: '',
     status: 2,
     tags: [],
+    category: [],
+    recommend: [],
   }
 }
 
-type RuleKey = Extract<keyof Model, 'type' | 'file_name'>;
+type RuleKey = Extract<keyof Model, 'type' | 'file_name' | 'category' | 'recommend'>;
 
 const rules: Record<RuleKey, App.Global.FormRule> = {
   type: defaultRequiredRule,
   file_name: defaultRequiredRule,
+  category: defaultRequiredArrRule,
+  recommend: defaultRequiredArrRule,
 }
 
 const imageOptions = ref<CommonType.Option[]>([])
 const tagOptions = ref<CommonType.Option[]>([])
+const categoryOptions = ref<CommonType.Option[]>([])
+const recommendOptions = ref<CommonType.Option[]>([])
 
 
 function handleInitModel() {
   model.value = createDefaultModel()
 
   if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(model.value, {...props.rowData, tags: props.rowData.tags.map(t => t.id)})
+    Object.assign(model.value, {
+      ...props.rowData,
+      tags: props.rowData.tags.map(t => t.id),
+      category: props.rowData.category.map(t => t.id),
+      recommend: props.rowData.recommend.map(t => t.id),
+    })
   }
 }
 
@@ -88,7 +105,7 @@ async function handleSubmit() {
     const uploadParams = fileInfo.fileList.map(it => {
       return {
         file: it?.file,
-        file_name: it.name,
+        file_name: model.value.file_name,
         root_dir: 'IMAGES',
         dir: 'PCANDMOA',
         type: model.value.type,
@@ -96,6 +113,8 @@ async function handleSubmit() {
         status: model.value.status,
         quality: 60,
         tags: model.value.tags,
+        category: model.value.category,
+        recommend: model.value.recommend,
       }
     })
 
@@ -115,6 +134,8 @@ async function handleSubmit() {
       type: model.value.type,
       status: model.value.status,
       tags: model.value.tags,
+      category: model.value.category,
+      recommend: model.value.recommend,
     })
     if (!err) {
       window.$message?.success($t('common.updateSuccess'))
@@ -153,6 +174,35 @@ async function getTagOptions() {
   })
 }
 
+async function getCategoryOptions() {
+  const {data, error} = await fetchCategoryList({page: 1, limit: 10000})
+  if (error) {
+    return
+  }
+
+  categoryOptions.value = data?.records.map(d => {
+    return {
+      label: d.name,
+      value: d.id,
+    }
+  })
+}
+
+async function getRecommendOptions() {
+  const {data, error} = await fetchRecommendList({page: 1, limit: 10000})
+  if (error) {
+    return
+  }
+
+  recommendOptions.value = data?.records.map(d => {
+    return {
+      label: d.name,
+      value: d.id,
+    }
+  })
+}
+
+
 const {uploadRef, onChange, fileInfo, reset, upload} = useUpload(() => {
   model.value.file_name = fileInfo.fileList[0].name
 })
@@ -164,6 +214,8 @@ watch(visible, async () => {
     getImageOptions()
     await restoreValidation()
     await getTagOptions()
+    await getCategoryOptions()
+    await getRecommendOptions()
     reset()
   }
 })
@@ -208,6 +260,24 @@ watch(visible, async () => {
         <NFormItem :label="$t('page.image.name')" path="file_name">
           <NInput v-model:value="model.file_name" placeholder="请输入图片名称"/>
         </NFormItem>
+        <NFormItem :label="$t('page.image.category')" path="category">
+          <NSelect
+            v-model:value="model.category"
+            multiple
+            filterable
+            :options="categoryOptions"
+            placeholder="请选择图片分类"
+          />
+        </NFormItem>
+        <NFormItem :label="$t('page.image.recommend')" path="recommend">
+          <NSelect
+            v-model:value="model.recommend"
+            multiple
+            filterable
+            :options="recommendOptions"
+            placeholder="请选择图片推荐分类"
+          />
+        </NFormItem>
         <NFormItem :label="$t('page.image.type')" path="type">
           <NSelect
             v-model:value="model.type"
@@ -215,7 +285,7 @@ watch(visible, async () => {
             placeholder="请选择图片类型"
           />
         </NFormItem>
-        <NFormItem :label="$t('page.image.tag')" path="status">
+        <NFormItem :label="$t('page.image.tag')" path="tags">
           <NSelect
             v-model:value="model.tags"
             :options="tagOptions"

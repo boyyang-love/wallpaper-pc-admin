@@ -5,7 +5,7 @@ import {useAppStore} from '@/store/modules/app'
 import {useTable, useTableOperate} from '@/hooks/common/table'
 import OperateDrawer from './modules/operate-drawer.vue'
 import Search from './modules/search.vue'
-import {fetchTagInfoList, fetchTagRemove, fetchTagSort} from '@/service/api/tag'
+import {fetchRecommendList, fetchRecommendRemove, fetchRecommendSort} from '@/service/api/recommend'
 import dayjs from 'dayjs'
 import {ref} from 'vue'
 
@@ -22,12 +22,11 @@ const {
   searchParams,
   resetSearchParams,
 } = useTable({
-  apiFn: fetchTagInfoList,
+  apiFn: fetchRecommendList,
   showTotal: true,
   apiParams: {
     page: 1,
     limit: 10,
-    type: '',
     name: '',
   },
   columns: () => [
@@ -55,19 +54,22 @@ const {
       minWidth: 200,
     },
     {
-      key: 'type',
-      title: $t('page.tag.type'),
-      align: 'center',
-      minWidth: 200,
-    },
-    {
       key: 'created',
       title: $t('common.created'),
       align: 'center',
       minWidth: 200,
       render: row => {
-        return dayjs(row.created).format('YYYY-MM-DD HH:mm')
-      },
+        return dayjs(row.created).format("YYYY-MM-DD HH:mm")
+      }
+    },
+    {
+      key: 'updated',
+      title: $t('common.updated'),
+      align: 'center',
+      minWidth: 200,
+      render: row => {
+        return dayjs(row.updated).format("YYYY-MM-DD HH:mm")
+      }
     },
     {
       key: 'operate',
@@ -109,14 +111,13 @@ const {
 
 async function handleBatchDelete() {
   // request
-  console.log(checkedRowKeys.value)
 
   await onBatchDeleted()
 }
 
 async function handleDelete(id: string) {
   // request
-  await fetchTagRemove({id: id})
+  await fetchRecommendRemove({id: id})
 
   await onDeleted()
 }
@@ -126,6 +127,7 @@ function edit(id: string) {
 }
 
 const sortLoading = ref<boolean>(false)
+
 async function setSort() {
   const sortData = data.value.map(d => {
     return {
@@ -134,7 +136,7 @@ async function setSort() {
     }
   })
   sortLoading.value = true
-  const {error} = await fetchTagSort({sort_data: sortData})
+  const {error} = await fetchRecommendSort({sort_data: sortData})
   if (!error) {
     window?.$message?.success('设置排序成功')
     await getData()

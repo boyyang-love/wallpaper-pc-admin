@@ -3,6 +3,7 @@ import {ref, toValue} from 'vue'
 import type {FormInst} from 'naive-ui'
 import {REG_CODE_SIX, REG_EMAIL, REG_PHONE, REG_PWD, REG_USER_NAME} from '@/constants/reg'
 import {$t} from '@/locales'
+import {RuleType} from 'async-validator'
 
 export function useFormRules() {
   const patternRules = {
@@ -43,12 +44,22 @@ export function useFormRules() {
 
   /** the default required rule */
   const defaultRequiredRule = createRequiredRule($t('form.required'))
+  const defaultRequiredArrRule = createRequiredRuleWithType($t('form.required'), 'array')
 
-  function createRequiredRule(message: string): App.Global.FormRule {
+  function createRequiredRule(message: string ): App.Global.FormRule {
     return {
       required: true,
       message,
       trigger: 'blur',
+    }
+  }
+
+  function createRequiredRuleWithType(message: string, type: RuleType ): App.Global.FormRule {
+    return {
+      required: true,
+      message,
+      trigger: 'blur',
+      type: type,
     }
   }
 
@@ -74,6 +85,7 @@ export function useFormRules() {
     patternRules,
     formRules,
     defaultRequiredRule,
+    defaultRequiredArrRule,
     createRequiredRule,
     createConfirmPwdRule,
   }

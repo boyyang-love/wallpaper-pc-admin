@@ -48,6 +48,8 @@ const local: App.I18n.Schema = {
       yes: 'Yes',
       no: 'No',
     },
+    created: 'created',
+    updated: 'updated',
   },
   request: {
     logout: 'Logout user after request failed',
@@ -165,6 +167,8 @@ const local: App.I18n.Schema = {
     home: 'Home',
     images: 'images',
     tag: 'tags',
+    category: 'category',
+    recommend: 'recommend',
   },
   page: {
     login: {
@@ -253,11 +257,14 @@ const local: App.I18n.Schema = {
       enable: 'Enable',
       disable: 'Disable',
       tag: 'tags',
+      category: 'category',
+      recommend: 'associate labels',
     },
     tag: {
       name: 'name',
-      type: 'type'
-    }
+      type: 'type',
+      sort: 'sort'
+    },
   },
   form: {
     required: 'Cannot be empty',

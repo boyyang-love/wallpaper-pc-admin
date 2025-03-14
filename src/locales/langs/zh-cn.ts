@@ -48,6 +48,8 @@ const local: App.I18n.Schema = {
       yes: '是',
       no: '否',
     },
+    created: '创建时间',
+    updated: '更新时间',
   },
   request: {
     logout: '请求失败后登出用户',
@@ -165,6 +167,8 @@ const local: App.I18n.Schema = {
     home: '首页',
     images: '图片',
     tag: '标签',
+    category: '分类',
+    recommend: '推荐',
   },
   page: {
     login: {
@@ -253,10 +257,13 @@ const local: App.I18n.Schema = {
       enable: '启用',
       disable: '禁用',
       tag: '标签',
+      category: '分类',
+      recommend: '推荐关联标签',
     },
     tag: {
       name: '名称',
       type: '类型',
+      sort: '排序',
     },
   },
   form: {

@@ -40,13 +40,24 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'category',
+    path: '/category',
+    component: 'layout.base$view.category',
+    meta: {
+      title: 'category',
+      i18nKey: 'route.category',
+      icon: 'fluent-color:library-16',
+      order: 3
+    }
+  },
+  {
     name: 'home',
     path: '/home',
     component: 'layout.base$view.home',
     meta: {
       title: 'home',
       i18nKey: 'route.home',
-      icon: 'mdi:monitor-dashboard',
+      icon: 'fluent-color:home-32',
       order: 1
     }
   },
@@ -71,7 +82,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       title: 'images',
       i18nKey: 'route.images',
       order: 2,
-      icon: 'marketeq:4k-2'
+      icon: 'fluent-color:beach-24'
     }
   },
   {
@@ -87,14 +98,25 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'recommend',
+    path: '/recommend',
+    component: 'layout.base$view.recommend',
+    meta: {
+      title: 'recommend',
+      i18nKey: 'route.recommend',
+      icon: 'fluent-color:slide-text-sparkle-24',
+      order: 5
+    }
+  },
+  {
     name: 'tag',
     path: '/tag',
     component: 'layout.base$view.tag',
     meta: {
       title: 'tag',
       i18nKey: 'route.tag',
-      order: 3,
-      icon: 'marketeq:hastag'
+      order: 4,
+      icon: 'fluent-color:poll-32'
     }
   }
 ];

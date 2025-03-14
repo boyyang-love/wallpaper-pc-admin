@@ -31,3 +31,11 @@ export function fetchTagRemove(data: Api.Tag.TagRemoveParms) {
     data,
   })
 }
+
+export function fetchTagSort(data: Api.Tag.TagSortParams) {
+  return request({
+    url: '/tag/sort',
+    method: 'post',
+    data,
+  })
+}
